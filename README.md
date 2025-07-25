@@ -1,214 +1,113 @@
-# Adonis-Bun Backend Framework
+# Personal Finance API
 
-A modern, fast backend framework built with [Bun](https://bun.com) and inspired by Adonis.js architecture. This project provides a robust foundation for building scalable web applications with TypeScript, PostgreSQL, and dependency injection.
+A comprehensive personal finance management API built with Bun, TypeScript, and PostgreSQL. This API provides endpoints for managing users, accounts, transactions, categories, and budgets.
 
-## 🚀 Features
+## Features
 
-- **Fast Runtime**: Built on Bun for exceptional performance
-- **TypeScript First**: Full TypeScript support with type safety
-- **Database Integration**: PostgreSQL with SQL migrations
-- **Dependency Injection**: Clean architecture with TypeDI
-- **Custom Router**: Lightweight, flexible routing system
-- **Service Layer**: Organized business logic
-- **Request Validation**: Built-in VineJS validation with custom error handling
-- **Docker Ready**: Production-ready containerization
-- **Logging**: Winston-based logging system
-- **Hot Reload**: Development with file watching
+- **User Management**: Create, update, and manage user accounts
+- **Account Management**: Track multiple financial accounts (checking, savings, credit, investment, cash)
+- **Transaction Tracking**: Record income, expenses, and transfers with categories
+- **Category Management**: Organize transactions with custom categories
+- **Budget Management**: Set and track budgets for categories with progress monitoring
+- **Clean Architecture**: Repository pattern with dependency injection
+- **Data Validation**: Comprehensive input validation using VineJS
+- **Database Migrations**: Automated database schema management
 
-## 📁 Project Structure
+## Tech Stack
 
-```
-adonis-bun/
-├── app/
-│   ├── controllers/     # Request handlers
-│   ├── middlewares/     # Request/response middleware
-│   ├── models/          # Data models and interfaces
-│   ├── services/        # Business logic layer
-│   └── utils/           # Utility functions
-├── config/              # Configuration files
-├── core/                # Framework core components
-├── db/
-│   └── migrations/      # Database migrations
-├── start/               # Application startup files
-└── bin/                 # Build scripts
-```
+- **Runtime**: Bun
+- **Language**: TypeScript
+- **Database**: PostgreSQL
+- **Cache**: Redis
+- **Validation**: VineJS
+- **Dependency Injection**: TypeDI
+- **Containerization**: Docker & Docker Compose
 
-## 🛠️ Prerequisites
+## Prerequisites
 
-- [Bun](https://bun.com) (v1.2.19 or higher)
-- PostgreSQL database
+- Docker and Docker Compose
+- Bun (for local development)
 
-## ⚡ Quick Start
+## Quick Start
 
-### 1. Install Dependencies
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd personal-finance
+   ```
 
-```bash
-bun install
-```
+2. **Start the database and Redis**
+   ```bash
+   docker-compose up -d
+   ```
 
-### 2. Environment Setup
+3. **Install dependencies**
+   ```bash
+   bun install
+   ```
 
-Create a `.env` file in the root directory:
+4. **Run database migrations**
+   ```bash
+   bun run migration:run
+   ```
 
-```env
-PORT=3000
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=your_username
-DB_PASSWORD=your_password
-DB_DATABASE=your_database
-```
+5. **Start the development server**
+   ```bash
+   bun run dev
+   ```
 
-### 3. Database Setup
+The API will be available at `http://localhost:3000`
 
-Run the database migrations:
+## API Endpoints
 
-```bash
-bun run migration:run
-```
+### Users
+- `GET /users` - List all users
+- `POST /users` - Create a new user
+- `PUT /users/:id` - Update a user
+- `DELETE /users/:id` - Delete a user
 
-### 4. Start Development Server
+### Accounts
+- `GET /accounts` - List all accounts for the authenticated user
+- `POST /accounts` - Create a new account
+- `GET /accounts/:id` - Get account details
+- `PUT /accounts/:id` - Update an account
+- `DELETE /accounts/:id` - Delete an account
 
-```bash
-bun run dev
-```
+### Categories
+- `GET /categories` - List all categories for the authenticated user
+- `POST /categories` - Create a new category
+- `GET /categories/:id` - Get category details
+- `PUT /categories/:id` - Update a category
+- `DELETE /categories/:id` - Delete a category
+- `GET /categories/type/:type` - Get categories by type (income/expense)
 
-The server will start on `http://localhost:3000` with hot reload enabled.
+### Transactions
+- `GET /transactions` - List all transactions for the authenticated user
+- `POST /transactions` - Create a new transaction
+- `GET /transactions/:id` - Get transaction details
+- `PUT /transactions/:id` - Update a transaction
+- `DELETE /transactions/:id` - Delete a transaction
+- `GET /transactions/account/:accountId` - Get transactions by account
+- `GET /transactions/category/:categoryId` - Get transactions by category
+- `GET /transactions/date-range` - Get transactions by date range
+- `GET /transactions/stats` - Get transaction statistics
 
-## 📚 Available Scripts
+### Budgets
+- `GET /budgets` - List all budgets for the authenticated user
+- `POST /budgets` - Create a new budget
+- `GET /budgets/:id` - Get budget details
+- `PUT /budgets/:id` - Update a budget
+- `DELETE /budgets/:id` - Delete a budget
+- `GET /budgets/category/:categoryId` - Get budget by category
+- `GET /budgets/active` - Get active budgets
+- `GET /budgets/category/:categoryId/progress` - Get budget progress
 
-| Command | Description |
-|---------|-------------|
-| `bun run dev` | Start development server with hot reload |
-| `bun run build` | Build the application for production |
-| `bun run start` | Run the built application |
-| `bun run ace` | Run custom CLI commands |
-| `bun run migration:run` | Run database migrations |
-| `bun run migration:rollback` | Rollback last migration |
-| `bun run lint` | Run ESLint for code quality |
+## Data Models
 
-## 🗄️ Database
-
-### Migrations
-
-The project uses a custom migration system. Migrations are located in `db/migrations/` and follow the pattern:
-
-```
-db/migrations/
-├── 1752543759855_create_blogs/
-│   ├── up.sql
-│   └── down.sql
-└── 1752543766220_create_users/
-    ├── up.sql
-    └── down.sql
-```
-
-### Running Migrations
-
-```bash
-# Run all pending migrations
-bun run migration:run
-
-# Rollback last migration
-bun run migration:rollback
-```
-
-## 🏗️ Architecture
-
-### Controllers
-
-Controllers handle HTTP requests and responses. They use dependency injection for services:
-
+### User
 ```typescript
-import { Service } from 'typedi';
-import UserService from '../services/user.service';
-
-@Service()
-export default class UserController {
-  constructor(private readonly userService: UserService) {}
-
-  public async index() {
-    return this.userService.getUsers();
-  }
-}
-```
-
-### Request Validation
-
-The framework includes built-in request validation using [VineJS](https://vinejs.dev/). The Request object is extended with a `validate` method that automatically handles validation errors:
-
-```typescript
-import { Service } from 'typedi';
-import vine from '@vinejs/vine';
-
-@Service()
-export default class UserController {
-  public async createUser(req: Request) {
-    // Define validation schema
-    const schema = vine.object({
-      name: vine.string().minLength(2).maxLength(50),
-      email: vine.string().email(),
-      password: vine.string().minLength(8).maxLength(32),
-      age: vine.number().optional().min(18),
-    });
-
-    // Validate request data (query params + body)
-    const payload = await req.validate(schema);
-    
-    // Use validated data
-    return { message: 'User created', data: payload };
-  }
-}
-```
-
-#### Validation Error Response
-
-When validation fails, the framework automatically returns a structured error response:
-
-```json
 {
-  "code": "VALIDATION_EXCEPTION",
-  "message": "Validation failed",
-  "status": 422,
-  "errors": [
-    {
-      "field": "email",
-      "rule": "required",
-      "message": "The email field must be a valid email address"
-    },
-    {
-      "field": "password", 
-      "rule": "required",
-      "message": "The password field must be at least 8 characters"
-    }
-  ]
-}
-```
-
-### Services
-
-Services contain business logic and database operations:
-
-```typescript
-import { Service } from 'typedi';
-import sql from '#start/sql';
-
-@Service()
-export default class UserService {
-  async getUsers() {
-    const users = await sql`SELECT * FROM users LIMIT 1`;
-    return { message: 'Users fetched successfully', data: users };
-  }
-}
-```
-
-### Models
-
-Models define data structures and interfaces:
-
-```typescript
-export interface User {
-  id?: number;
+  id: number;
   name: string;
   email: string;
   password: string;
@@ -218,122 +117,132 @@ export interface User {
 }
 ```
 
-## 🛣️ Routing
-
-Routes are defined in `start/routes.ts`:
-
+### Account
 ```typescript
-import UserController from '#controllers/user.controller';
-import Route from '#core/route';
-
-// Simple routes
-Route.get('/', [UserController, 'index']);
-
-// Route groups
-Route.group('/users', () => {
-  Route.get('/', [UserController, 'getUsers']);
-  Route.post('/', [UserController, 'createUser']);
-});
+{
+  id: number;
+  user_id: number;
+  name: string;
+  type: 'checking' | 'savings' | 'credit' | 'investment' | 'cash';
+  balance: number;
+  currency: string;
+  is_active: boolean;
+  created_at: Date;
+  updated_at?: Date;
+  deleted_at?: Date;
+}
 ```
 
-## 🐳 Docker
+### Category
+```typescript
+{
+  id: number;
+  user_id: number;
+  name: string;
+  type: 'income' | 'expense';
+  color?: string;
+  icon?: string;
+  is_active: boolean;
+  created_at: Date;
+  updated_at?: Date;
+  deleted_at?: Date;
+}
+```
 
-### Build and Run with Docker
+### Transaction
+```typescript
+{
+  id: number;
+  user_id: number;
+  account_id: number;
+  category_id: number;
+  amount: number;
+  type: 'income' | 'expense' | 'transfer';
+  description: string;
+  date: Date;
+  is_recurring: boolean;
+  recurring_frequency?: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  created_at: Date;
+  updated_at?: Date;
+  deleted_at?: Date;
+}
+```
 
+### Budget
+```typescript
+{
+  id: number;
+  user_id: number;
+  category_id: number;
+  amount: number;
+  period: 'monthly' | 'yearly';
+  start_date: Date;
+  end_date?: Date;
+  is_active: boolean;
+  created_at: Date;
+  updated_at?: Date;
+  deleted_at?: Date;
+}
+```
+
+## Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+NODE_ENV=development
+PORT=3000
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/personal_finance
+REDIS_URL=redis://localhost:6379
+```
+
+## Development
+
+### Running Tests
 ```bash
-# Build the Docker image
-docker build -t bun-backend-template .
-
-# Run the container
-docker run -p 3000:3000 bun-backend-template
+bun test
 ```
 
-### Docker Compose (Optional)
-
-Create a `docker-compose.yml` for local development:
-
-```yaml
-version: '3.8'
-services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=password
-      - DB_DATABASE=postgres
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:15
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=postgres
-    ports:
-      - "5432:5432"
+### Linting
+```bash
+bun run lint
 ```
 
-## 🔧 Configuration
-
-### Database Configuration
-
-Database settings are in `config/database.ts`:
-
-```typescript
-export default {
-  hostname: env.DB_HOST,
-  port: env.DB_PORT,
-  database: env.DB_DATABASE,
-  username: env.DB_USER,
-  password: env.DB_PASSWORD,
-  max: 20,
-  idleTimeout: 30,
-  maxLifetime: 0,
-  connectionTimeout: 30,
-} as SQLOptions;
-```
-
-### Logging
-
-Logging is configured in `config/logger.ts` using Winston.
-
-## 🚀 Production Deployment
-
-### Build for Production
-
+### Building
 ```bash
 bun run build
 ```
 
-This creates a standalone binary in the root directory.
-
-### Run Production Server
-
+### Database Migrations
 ```bash
-./server
+# Run migrations
+bun run migration:run
+
+# Rollback migrations
+bun run migration:rollback
 ```
 
-## 🤝 Contributing
+## Architecture
+
+The application follows a clean architecture pattern with:
+
+- **Controllers**: Handle HTTP requests and responses
+- **Services**: Contain business logic
+- **Repositories**: Handle data access and persistence
+- **Models**: Define data structures
+- **Validators**: Validate input data
+- **Middleware**: Handle cross-cutting concerns
+
+All dependencies are injected using TypeDI for better testability and maintainability.
+
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Run tests and linting
+4. Add tests if applicable
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
-
-## 🆘 Support
-
-For issues and questions, please open an issue on the repository.
-
----
-
-Built with ❤️ using [Bun](https://bun.com) and TypeScript.

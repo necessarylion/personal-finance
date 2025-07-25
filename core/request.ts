@@ -23,10 +23,8 @@ if (!Request.prototype.query) {
 
 // Extend the Request prototype to add all method
 if (!Request.prototype.all) {
-  Request.prototype.all = async function (): Promise<Record<string, any>> {
-    const queryParams = this.query();
-    const body = await this.jsonBody();
-    return { ...queryParams, ...body };
+  Request.prototype.all = function (): Record<string, any> {
+    return this._allInputs;
   };
 }
 
@@ -49,7 +47,7 @@ if (!Request.prototype.validate) {
     try {
       return await vine.validate({
         schema,
-        data: await this.all(),
+        data: this.all(),
       });
     } catch (error: any) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
@@ -61,11 +59,29 @@ if (!Request.prototype.validate) {
   };
 }
 
+if (!Request.prototype.input) {
+  Request.prototype.input = async function (key: string): Promise<any> {
+    const queryParams = this.all();
+    return queryParams[key];
+  };
+}
+
+if (!Request.prototype.parseAllInputs) {
+  Request.prototype.parseAllInputs = async function (): Promise<void> {
+    const queryParams = this.query();
+    const body = await this.jsonBody();
+    this._allInputs = { ...queryParams, ...body };
+  };
+}
+
 // Type declaration to extend the Request interface
 declare global {
   interface Request {
+    _allInputs: Record<string, any>;
     query(): Record<string, string>;
-    all(): Promise<Record<string, any>>;
+    parseAllInputs(): Promise<void>;
+    all(): Record<string, any>;
+    input(key: string): any;
     jsonBody(): Promise<Record<string, any>>;
     validate<Schema extends SchemaTypes>(
       schema: Schema,

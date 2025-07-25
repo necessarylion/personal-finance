@@ -82,6 +82,7 @@ export class Router {
       // assign the handler to the route path
       records[path][method] = async (req: Request) => {
         try {
+          await req.parseAllInputs();
           // handle middlewares
           const middlewareResponse = await router.#handleMiddlewares(
             req,

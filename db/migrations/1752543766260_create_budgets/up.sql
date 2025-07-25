@@ -1,0 +1,13 @@
+CREATE TABLE budgets (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
+  amount DECIMAL(15,2) NOT NULL,
+  period VARCHAR(50) NOT NULL CHECK (period IN ('monthly', 'yearly')),
+  start_date DATE NOT NULL,
+  end_date DATE,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+); 

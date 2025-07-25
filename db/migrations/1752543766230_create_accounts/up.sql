@@ -1,0 +1,12 @@
+CREATE TABLE accounts (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(50) NOT NULL CHECK (type IN ('checking', 'savings', 'credit', 'investment', 'cash')),
+  balance DECIMAL(15,2) NOT NULL DEFAULT 0,
+  currency VARCHAR(3) NOT NULL DEFAULT 'USD',
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+); 

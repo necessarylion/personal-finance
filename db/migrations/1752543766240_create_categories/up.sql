@@ -1,0 +1,12 @@
+CREATE TABLE categories (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(50) NOT NULL CHECK (type IN ('income', 'expense')),
+  color VARCHAR(7),
+  icon VARCHAR(50),
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+); 

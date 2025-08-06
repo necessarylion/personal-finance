@@ -50,11 +50,11 @@ export default class AccountService {
     return account;
   }
 
-  async updateBalance(userId: number, id: number, balance: number) {
+  async updateBalance(userId: number, id: number, initialBalance: number) {
     const account = await this.accountRepository.getAccountById(id, userId);
     if (!account) {
       throw new Error('Account not found');
     }
-    return this.accountRepository.updateAccountBalance(id, balance);
+    return this.accountRepository.updateAccountBalance(id, initialBalance);
   }
 } 

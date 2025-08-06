@@ -1,5 +1,5 @@
 import type { Category } from '#models/category.model';
-import sql from '#start/sql';
+import sql from '#start/spark';
 import { Service } from 'typedi';
 
 @Service()

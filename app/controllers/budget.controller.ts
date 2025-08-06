@@ -47,8 +47,8 @@ export default class BudgetController {
   public async getProgress(req: Request) {
     const userId = 1; // TODO: Get from auth middleware
     const categoryId = Number(req.params.categoryId);
-    const startDate = new Date(req.input('startDate'));
-    const endDate = new Date(req.input('endDate'));
+    const startDate = new Date(req.input('startDate') || new Date().toISOString());
+    const endDate = new Date(req.input('endDate') || new Date().toISOString());
     return await this.budgetService.getProgress(userId, categoryId, startDate, endDate);
   }
 } 

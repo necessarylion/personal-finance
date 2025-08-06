@@ -32,9 +32,9 @@ if (!Request.prototype.all) {
 if (!Request.prototype.jsonBody) {
   Request.prototype.jsonBody = async function (): Promise<Record<string, any>> {
     let body: Record<string, any> = {};
-    // if (this.method === 'POST') {
+    if (this.body) {
       body = (await this.json()) as Record<string, any>;
-    // }
+    }
     return body;
   };
 }

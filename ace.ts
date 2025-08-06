@@ -1,4 +1,4 @@
-import '#start/sql';
+import '#start/spark';
 import { Migration } from '#core/migration';
 import { Command } from 'commander';
 import { Ace } from '#core/ace';

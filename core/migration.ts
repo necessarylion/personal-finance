@@ -1,4 +1,4 @@
-import sql from '#start/sql';
+import sql from '#start/spark';
 import { readdir } from 'node:fs/promises';
 import { logger } from '#core/logger';
 import { snakeCase } from 'change-case';

@@ -8,8 +8,9 @@ export default class TransactionController {
 
   public async index(req: Request) {
     const userId = 1; // TODO: Get from auth middleware
-    const limit = Number(req.query.limit) || 50;
-    const offset = Number(req.query.offset) || 0;
+    const query = req.query();
+    const limit = Number(query.limit) || 50;
+    const offset = Number(query.offset) || 0;
     return await this.transactionService.listing(userId, limit, offset);
   }
 
@@ -49,15 +50,17 @@ export default class TransactionController {
 
   public async getByDateRange(req: Request) {
     const userId = 1; // TODO: Get from auth middleware
-    const startDate = new Date(req.query.startDate as string);
-    const endDate = new Date(req.query.endDate as string);
+    const query = req.query();
+    const startDate = new Date(query.start as string);
+    const endDate = new Date(query.end as string);
     return await this.transactionService.getByDateRange(userId, startDate, endDate);
   }
 
   public async getStats(req: Request) {
     const userId = 1; // TODO: Get from auth middleware
-    const startDate = new Date(req.query.startDate as string);
-    const endDate = new Date(req.query.endDate as string);
+    const query = req.query();
+    const startDate = new Date(query.start as string);
+    const endDate = new Date(query.end as string);
     return await this.transactionService.getStats(userId, startDate, endDate);
   }
 } 

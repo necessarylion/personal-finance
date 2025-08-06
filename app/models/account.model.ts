@@ -3,7 +3,8 @@ export interface Account {
   user_id: number;
   name: string;
   type: 'checking' | 'savings' | 'credit' | 'investment' | 'cash';
-  balance: number;
+  initial_balance: number;
+  current_balance?: number;
   currency: string;
   is_active: boolean;
   created_at: Date;

@@ -1,5 +1,5 @@
 import type { Transaction } from '#models/transaction.model';
-import sql from '#start/sql';
+import sql from '#start/spark';
 import { Service } from 'typedi';
 
 @Service()

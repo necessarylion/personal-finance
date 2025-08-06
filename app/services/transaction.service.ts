@@ -27,15 +27,8 @@ export default class TransactionService {
 
     const transaction = await this.transactionRepository.createTransaction(transactionData);
 
-    // Update account balance
-    let newBalance = account.balance;
-    if (payload.type === 'income') {
-      newBalance += payload.amount;
-    } else if (payload.type === 'expense') {
-      newBalance -= payload.amount;
-    }
-
-    await this.accountRepository.updateAccountBalance(account.id!, newBalance);
+    // Note: Account balance is now calculated dynamically from transactions
+    // No need to update initial_balance when creating transactions
 
     return transaction;
   }
@@ -53,23 +46,8 @@ export default class TransactionService {
 
     const updatedTransaction = await this.transactionRepository.updateTransaction(id, updateData);
 
-    // If amount or type changed, update account balance
-    if (payload.amount !== undefined || payload.type !== undefined) {
-      const account = await this.accountRepository.getAccountById(transaction.account_id, userId);
-      if (account) {
-        // Recalculate balance by getting all transactions for this account
-        const accountTransactions = await this.transactionRepository.getTransactionsByAccount(userId, transaction.account_id);
-        const totalIncome = accountTransactions
-          .filter(t => t.type === 'income')
-          .reduce((sum, t) => sum + t.amount, 0);
-        const totalExpense = accountTransactions
-          .filter(t => t.type === 'expense')
-          .reduce((sum, t) => sum + t.amount, 0);
-        
-        const newBalance = totalIncome - totalExpense;
-        await this.accountRepository.updateAccountBalance(transaction.account_id, newBalance);
-      }
-    }
+    // Note: Account balance is now calculated dynamically from transactions
+    // No need to update initial_balance when updating transactions
 
     return updatedTransaction;
   }
@@ -82,20 +60,8 @@ export default class TransactionService {
 
     await this.transactionRepository.deleteTransaction(id);
 
-    // Update account balance
-    const account = await this.accountRepository.getAccountById(transaction.account_id, userId);
-    if (account) {
-      const accountTransactions = await this.transactionRepository.getTransactionsByAccount(userId, transaction.account_id);
-      const totalIncome = accountTransactions
-        .filter(t => t.type === 'income')
-        .reduce((sum, t) => sum + t.amount, 0);
-      const totalExpense = accountTransactions
-        .filter(t => t.type === 'expense')
-        .reduce((sum, t) => sum + t.amount, 0);
-      
-      const newBalance = totalIncome - totalExpense;
-      await this.accountRepository.updateAccountBalance(transaction.account_id, newBalance);
-    }
+    // Note: Account balance is now calculated dynamically from transactions
+    // No need to update initial_balance when deleting transactions
   }
 
   async listing(userId: number, limit = 50, offset = 0) {

@@ -1,13 +1,36 @@
-export interface Account {
-  id?: number;
-  user_id: number;
-  name: string;
-  type: 'checking' | 'savings' | 'credit' | 'investment' | 'cash';
-  initial_balance: number;
-  current_balance?: number;
-  currency: string;
-  is_active: boolean;
-  created_at: Date;
-  updated_at?: Date;
-  deleted_at?: Date;
+import { column, Model } from "bun-spark";
+
+export class Account extends Model {
+  @column({ primary: true })
+  public id?: number;
+
+  @column()
+  public userId: number;
+
+  @column()
+  public name: string;
+
+  @column()
+  public type: 'checking' | 'savings' | 'credit' | 'investment' | 'cash';
+
+  @column()
+  public initialBalance: number;
+
+  @column()
+  public currentBalance?: number;
+
+  @column()
+  public currency: string;
+
+  @column()
+  public isActive: boolean;
+
+  @column()
+  public createdAt: Date;
+
+  @column()
+  public updatedAt?: Date;
+
+  @column()
+  public deletedAt?: Date;
 } 

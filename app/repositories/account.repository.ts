@@ -1,4 +1,4 @@
-import type { Account } from '#models/account.model';
+import { Account } from '#models/account.model';
 import spark from '#start/spark';
 import { Service } from 'typedi';
 
@@ -40,9 +40,7 @@ export default class AccountRepository {
    * @throws Error if account creation fails
    */
   async createAccount(account: Account): Promise<Account> {
-    const [newAccount] = await spark.table('accounts').insert<Account>(account);
-    if (!newAccount) throw new Error('Failed to create account');
-    return newAccount;
+    return await Account.create(account);
   }
 
   /**
@@ -53,9 +51,9 @@ export default class AccountRepository {
    * @throws Error if account update fails
    */
   async updateAccount(id: number, account: Partial<Account>): Promise<Account | undefined> {
-    const [updatedAccount]: Account[] = await spark.table('accounts')
+    const [updatedAccount]: Account[] = await Account.query()
       .where('id', id)
-      .update<Account>(account);
+      .update(account);
     if (!updatedAccount) throw new Error('Failed to update account');
     return updatedAccount;
   }
@@ -66,7 +64,7 @@ export default class AccountRepository {
    * @returns Promise<void>
    */
   async deleteAccount(id: number): Promise<void> {
-    await spark.table('accounts').where('id', id).delete();
+    await Account.query().where('id', id).delete();
   }
 
   /**
@@ -75,12 +73,12 @@ export default class AccountRepository {
    * @returns Promise<Account[]> - Array of accounts with current_balance field
    */
   async getAccounts(userId: number): Promise<Account[]> {
-    const accounts = await spark.
-      table('accounts')
+    const accounts = await Account.query()
       .select(['accounts.*', this.#getCurrentBalanceCalculation()])
-      .where('user_id', userId)
+      .where('user_id', '=', userId)
       .whereNull('deleted_at')
-      .orderBy('name', 'ASC').get();
+      .orderBy('name', 'ASC')
+      .get();
     return accounts;
   }
 
@@ -90,9 +88,8 @@ export default class AccountRepository {
    * @param userId - The user ID for security validation
    * @returns Promise<Account | undefined> - The account with current_balance field or undefined if not found
    */
-  async getAccountById(id: number, userId: number): Promise<Account | undefined> {
-    const account = await spark.
-      table('accounts')
+  async getAccountById(id: number, userId: number): Promise<Account | null> {
+    const account = await Account.query()
       .select(['accounts.*', this.#getCurrentBalanceCalculation()])
       .where('user_id', userId)
       .whereNull('deleted_at')
@@ -108,7 +105,7 @@ export default class AccountRepository {
    * @returns Promise<Account | undefined> - The updated account or undefined if not found
    */
   async updateAccountBalance(id: number, initialBalance: number): Promise<Account | undefined> {
-    const [updatedAccount]: Account[] = await spark.table('accounts').where('id', id).update<Account>({ initial_balance: initialBalance });
+    const [updatedAccount]: Account[] = await Account.query().where('id', id).update({ initialBalance });
     return updatedAccount;
   }
 } 

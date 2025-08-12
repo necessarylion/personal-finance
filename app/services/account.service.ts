@@ -8,11 +8,11 @@ export default class AccountService {
   constructor(private readonly accountRepository: AccountRepository) {}
 
   async create(userId: number, payload: VAccountCreate) {
-    const accountData: Account = {
+    const accountData: Partial<Account> = {
       ...payload,
-      user_id: userId,
-      created_at: new Date(),
-      updated_at: new Date(),
+      userId: userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     return this.accountRepository.createAccount(accountData);
   }

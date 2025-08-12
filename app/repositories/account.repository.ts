@@ -39,7 +39,7 @@ export default class AccountRepository {
    * @returns Promise<Account> - The created account with generated ID and timestamps
    * @throws Error if account creation fails
    */
-  async createAccount(account: Account): Promise<Account> {
+  async createAccount(account: Partial<Account>): Promise<Account> {
     return await Account.create(account);
   }
 
